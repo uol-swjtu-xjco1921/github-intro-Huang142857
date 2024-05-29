@@ -88,9 +88,24 @@ void free_maze(char **maze, int height) {
 }
 
 void place_start_and_end(char **maze, int width, int height) {
-    maze[1][1] = 'S';
-    maze[height - 2][width - 2] = 'E';
+    // Randomly select start and end points
+    int start_x, start_y, end_x, end_y;
+    start_x = rand() % (width - 2) + 1;
+    start_y = rand() % (height - 2) + 1;
+    end_x = rand() % (width - 2) + 1;
+    end_y = rand() % (height - 2) + 1;
+
+    // Ensure start and end points are not at the same position
+    while (start_x == end_x && start_y == end_y) {
+        end_x = rand() % (width - 2) + 1;
+        end_y = rand() % (height - 2) + 1;
+    }
+
+    // Place start and end points
+    maze[start_y][start_x] = 'S';
+    maze[end_y][end_x] = 'E';
 }
+
 
 void save_maze_to_file(char **maze, int width, int height, const char *filename) {
     FILE *file = fopen(filename, "w");
@@ -124,9 +139,10 @@ int main(int argc, char *argv[]) {
 
     char **maze = create_empty_maze(width, height);
     generate_maze(maze, width, height);
-    place_start_and_end(maze, width, height);
+    place_start_and_end(maze, width, height); // Place start and end points
     save_maze_to_file(maze, width, height, filename);
     free_maze(maze, height);
+
 
     return EXIT_SUCCESS;
 }
